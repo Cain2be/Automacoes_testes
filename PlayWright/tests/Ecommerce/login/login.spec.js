@@ -219,7 +219,7 @@ test.describe('SEGURANÇA', () => {
 
 //SECTION - TESTES DE USABILIDADE
 test.describe('USABILIDADE', () => {
-    test.only('Recuperação de Senha', async ({ page }) => {
+    test('Recuperação de Senha', async ({ page }) => {
         const loginPage = new LoginPage(page);
         await loginPage.navigate();
 
