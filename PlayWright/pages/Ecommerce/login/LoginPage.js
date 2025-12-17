@@ -12,7 +12,9 @@ class LoginPage {
         this.botaoLogout = page.getByRole('link', { name: 'Sair'});
         this.botaoEsqueciSenha = page.getByRole('link', { name: 'Esqueceu sua senha?' });
         this.cpfInputEsqueciSenha = page.locator('#input-cpf');
-        this.botaoContinuarEsqueciSenha = page.locator('#check-cpf');
+        this.botaoContinuarEsqueciSenha = page.locator('#check_cpf');
+        this.metodoEsqueciSenha = page.locator('#method-1');
+        this.botaoSendCodigoEsqueciSenha = page.locator('#send_recover')
     }
 
     async navigate() {
@@ -56,7 +58,11 @@ class LoginPage {
     async forgotPassword(cpf) {
         await this.botaoEsqueciSenha.click();
         await this.cpfInputEsqueciSenha.fill(cpf);
+        await this.botaoContinuarEsqueciSenha.waitFor({ state: 'visible', timeout: 10000 });
         await this.botaoContinuarEsqueciSenha.click();
+        await this.metodoEsqueciSenha.click();
+        await this.botaoSendCodigoEsqueciSenha.waitFor({ state: 'visible', timeout: 10000 });
+        await this.botaoSendCodigoEsqueciSenha.click();
     }
 }
 
