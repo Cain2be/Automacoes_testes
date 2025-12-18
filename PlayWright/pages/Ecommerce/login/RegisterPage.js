@@ -16,80 +16,56 @@ class RegisterPage {
         this.negarEmail = page.getByRole('radio', { name: 'Não' });
         this.aceitarPolitica = page.getByRole('checkbox'); // pode pegar vários checkboxes se tiver
         this.botaoContinuar = page.getByRole('button', { name: 'Continuar' });
+        this.erroCpfInvalido = page.locator('#cpf-error');
+        this.erroNomeVazio = page.locator('#firstname-error');
+        this.erroSobrenomeVazio = page.locator('#lastname-error');
+        this.erroEmailVazio = page.getByText('O e-mail não é válido');
+        this.erroTelefoneVazio = page.getByText('O telefone deve ter entre 10 e 11 números');
+        this.erroSenhaVazia = page.getByText('A senha deve ter entre 4 e 20 caracteres');
+        this.erroRepSenhaVazia = page.getByText('A senha repetida esta errada');
     }
 
     async navigate() {
-        await this.page.goto(this.url);
+        await this.page.goto(this.url, {
+            waitUntil: 'domcontentloaded',
+            timeout: 60000
+        });
     }
 
     
 
-    async register({
+    async preencherFormulario({
         cpf,
         email,
         nome,
         sobrenome,
         telefone,
         senha,
-        aceitaTermos = true
+        repsenha,
     }) {
-        // Preencher campos básicos
-        if (cpf) await this.cpfInput.fill(cpf);
-        if (email) await this.emailInput.fill(email);
-        if (nome) await this.nomeInput.fill(nome);
-        if (sobrenome) await this.sobrenomeInput.fill(sobrenome);
-        if (telefone) await this.phoneInput.fill(telefone);
-        if (senha) {
-            await this.senhaInput.fill(senha);
-            await this.repSenhaInput.fill(senha);
-        }
+        if (cpf !== undefined) await this.cpfInput.fill(cpf);
+        if (email !== undefined) await this.emailInput.fill(email);
+        if (nome !== undefined) await this.nomeInput.fill(nome);
+        if (sobrenome !== undefined) await this.sobrenomeInput.fill(sobrenome);
+        if (telefone !== undefined) await this.phoneInput.fill(telefone);
+        if (senha !== undefined) await this.senhaInput.fill(senha);
+        if (repsenha !== undefined) await this.repSenhaInput.fill(repsenha);
+    }
 
-        // Newsletter
+
+
+    async register(dados) {
+        await this.preencherFormulario(dados);
         await this.selecionarNewsletter('Não');
-
-        // Aceitar termos
-        if (aceitaTermos) {
-            await this.marcarPolitica();
-        }
-
-        // Clicar no CAPTCHA
-        await this.clicarCaptcha();
-
-        // Clicar em continuar
+        if (dados.aceitaTermos) await this.marcarPolitica();
         await this.botaoContinuar.click();
     }
 
-    async registerEnter({
-        cpf,
-        email,
-        nome,
-        sobrenome,
-        telefone,
-        senha,
-        confirmarSenha,
-        aceitaTermos = true
-    }) {
-        // Preencher campos
-        if (cpf) await this.cpfInput.fill(cpf);
-        if (email) await this.emailInput.fill(email);
-        if (nome) await this.nomeInput.fill(nome);
-        if (sobrenome) await this.sobrenomeInput.fill(sobrenome);
-        if (telefone) await this.phoneInput.fill(telefone);
-        if (senha) await this.senhaInput.fill(senha);
-        if (confirmarSenha) await this.repSenhaInput.fill(confirmarSenha);
 
-        // Newsletter
+    async registerEnter(dados) {
+        await this.preencherFormulario(dados);
         await this.selecionarNewsletter('Não');
-
-        // Aceitar termos
-        if (aceitaTermos) {
-            await this.marcarPolitica();
-        }
-
-        // Clicar no CAPTCHA
-        await this.clicarCaptcha();
-
-        // Pressionar Enter no campo de senha
+        if (dados.aceitaTermos) await this.marcarPolitica();
         await this.senhaInput.press('Enter');
     }
 
@@ -127,60 +103,6 @@ class RegisterPage {
 
 
 
-
-
-
-
-
-    async clicarCaptcha() {
-        console.log('Procurando o CAPTCHA...');
-        
-        try {
-            // Verifica se existe iframe do CAPTCHA
-            const iframeSelector = 'iframe[title*="reCAPTCHA"], iframe[src*="google.com/recaptcha"]';
-            const encontrou = await this.page.locator(iframeSelector).count() > 0;
-            
-            if (encontrou) {
-                console.log('CAPTCHA encontrado!');
-                
-                // Encontra o iframe e clica no checkbox dentro dele
-                const iframe = this.page.frameLocator(iframeSelector).first();
-                await iframe.locator('#recaptcha-anchor').click({ 
-                    force: true,
-                    timeout: 5000 
-                });
-                
-                console.log('Clicou no CAPTCHA!');
-                
-                // Espera para verificar se foi marcado
-                await this.page.waitForTimeout(2000);
-                
-                // Verifica se o CAPTCHA foi aceito
-                try {
-                    await iframe.locator('#recaptcha-anchor[aria-checked="true"]').waitFor({
-                        state: 'visible',
-                        timeout: 5000
-                    });
-                    console.log('CAPTCHA marcado com sucesso!');
-                } catch {
-                    console.log('CAPTCHA pode exigir verificação adicional');
-                }
-                
-                return true;
-            } else {
-                console.log('Não encontrou CAPTCHA na página');
-                return false;
-            }
-        } catch (error) {
-            console.log('Erro ao clicar no CAPTCHA:', error.message);
-            return false;
-        }
-    }
-
-
-
-
-
     async selecionarNewsletter(opcao = 'Não') {
         try {
             const radio = this.page.getByRole('radio', { name: opcao });
@@ -193,12 +115,9 @@ class RegisterPage {
             
             if (!isChecked) {
                 await radio.check({ force: true });
-                console.log(`Newsletter "${opcao}" selecionado`);
             } else {
-                console.log(`Newsletter "${opcao}" já estava selecionado`);
             }
         } catch (error) {
-            console.log(`Erro ao selecionar newsletter "${opcao}":`, error.message);
         }
     }
 
@@ -220,9 +139,7 @@ class RegisterPage {
                     
                     if (!isChecked) {
                         await checkbox.check({ force: true });
-                        console.log('Checkbox de política marcado');
                     } else {
-                        console.log('Checkbox de política já estava marcado');
                     }
                     return;
                 }
@@ -234,7 +151,6 @@ class RegisterPage {
                 const checkboxNearLabel = labelWithText.locator('input[type="checkbox"]');
                 if (await checkboxNearLabel.count() > 0) {
                     await checkboxNearLabel.check({ force: true });
-                    console.log('Checkbox encontrado via label');
                     return;
                 }
             }
@@ -243,14 +159,11 @@ class RegisterPage {
             const firstCheckbox = this.page.locator('input[type="checkbox"]').first();
             if (await firstCheckbox.count() > 0) {
                 await firstCheckbox.check({ force: true });
-                console.log('Usando primeiro checkbox da página');
                 return;
             }
             
-            console.warn('Não foi possível encontrar checkbox de política');
             
         } catch (error) {
-            console.error('Erro ao marcar política:', error.message);
         }
     }
 }
