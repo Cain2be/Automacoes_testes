@@ -1,5 +1,5 @@
 const { test, expect, chromium } = require('@playwright/test');
-const LoginPage = require('../../pages/Ecommerce/LoginPage');
+const LoginPage = require('../../../pages/Ecommerce/login/LoginPage.js');
 
 
 
@@ -12,7 +12,7 @@ test.describe('SUCESSO', () => {
         const loginPage = new LoginPage(page);
 
         await loginPage.navigate();
-        await loginPage.login('45951270812', '++big2be##');
+        await loginPage.login('35186881899', '++big2be##');
         
         const sucesso = page.locator('sub:has-text("Olá,")');
         await expect(sucesso).toBeVisible();
@@ -25,7 +25,7 @@ test.describe('SUCESSO', () => {
     const loginPage = new LoginPage(page);
 
     await loginPage.navigate();
-    await loginPage.login('caio.bstabile@gmail.com', '12345678');
+    await loginPage.login('abadia.dionatan@gmail.com', '12345678');
     
     const sucesso = page.locator('sub:has-text("Olá,")');
     await expect(sucesso).toBeVisible();
@@ -38,7 +38,7 @@ test.describe('SUCESSO', () => {
         const loginPage = new LoginPage(page);
 
         await loginPage.navigate();
-        await loginPage.loginEnter('45951270812', '++big2be##');
+        await loginPage.loginEnter('35186881899', '++big2be##');
         const sucesso = page.locator('sub:has-text("Olá,")');
         await expect(sucesso).toBeVisible();
     });
@@ -50,11 +50,11 @@ test.describe('SUCESSO', () => {
         const loginPage = new LoginPage(page);
 
         await loginPage.navigate();
-        await loginPage.login('45951270812','++bi2be##');
+        await loginPage.login('35186881899','++bi2be##');
 
         await loginPage.errorInLogin();
 
-        await loginPage.login('45951270812', '++big2be##');
+        await loginPage.login('35186881899', '++big2be##');
         const sucesso = page.locator('sub:has-text("Olá,")');
         await expect(sucesso).toBeVisible();
     });
@@ -83,7 +83,7 @@ test.describe('ERRO', () => {
         const loginPage = new LoginPage(page);
 
         await loginPage.navigate();
-        await loginPage.login('459512708-12','++big2be##');
+        await loginPage.login('351868818-99','++big2be##');
 
         await loginPage.errorInLogin();
     });
@@ -109,7 +109,7 @@ test.describe('ERRO', () => {
 
         await loginPage.navigate();
         const urlBeforeLogin = page.url();
-        await loginPage.login('45951270812','')
+        await loginPage.login('35186881899','')
 
         await expect(page).toHaveURL(urlBeforeLogin);
     });
@@ -223,12 +223,11 @@ test.describe('USABILIDADE', () => {
         const loginPage = new LoginPage(page);
         await loginPage.navigate();
 
-        loginPage.forgotPassword('45951270812');
+        loginPage.forgotPassword('35186881899');
         
         const mensagem = page.getByText('Enviamos para o seu e-mail a nova senha');
         await expect(mensagem).toBeVisible({ timeout: 10000 });
     });
-
 });
 
 
