@@ -4,7 +4,7 @@ class LoginPage {
     constructor(page) {
         this.page = page;
 
-        this.url = 'https://devecommerce.big2be.com/conta/acessar'; //Voltar pra Global depois
+        this.url = 'https://online.superitalo.com.br/conta/acessar'; //Voltar pra Global depois
         this.cpfInput = page.locator('#input-email');
         this.senhaInput = page.locator('#input-password');
         this.continuarButton = page.locator('[name="login"]');
