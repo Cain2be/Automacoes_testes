@@ -8,7 +8,7 @@ const LoginPage = require('../../../pages/Ecommerce/login/LoginPage.js');
 //SECTION - CENÁRIOS DE SUCESSO
 test.describe('SUCESSO', () => {
 
-    test('Login com CPF Válido', async ({ page }) => {
+    test('CT-01 Login com CPF Válido', async ({ page }) => {
         const loginPage = new LoginPage(page);
 
         await loginPage.navigate();
@@ -21,11 +21,11 @@ test.describe('SUCESSO', () => {
 
 
 
-    test('Login com email Válido', async ({ page }) => {
+    test('CT-02 Login com email Válido', async ({ page }) => {
     const loginPage = new LoginPage(page);
 
     await loginPage.navigate();
-    await loginPage.login('abadia.dionatan@gmail.com', '12345678');
+    await loginPage.login('caio.bstabile@hotmail.com', '++big2be##');
     
     const sucesso = page.locator('sub:has-text("Olá,")');
     await expect(sucesso).toBeVisible();
@@ -34,7 +34,7 @@ test.describe('SUCESSO', () => {
 
 
 
-    test('Login com CPF Válido usando Enter', async ({ page }) => {
+    test('CT-03 Login com CPF Válido usando Enter', async ({ page }) => {
         const loginPage = new LoginPage(page);
 
         await loginPage.navigate();
@@ -46,7 +46,7 @@ test.describe('SUCESSO', () => {
 
 
 
-    test('Login Após Erro', async ({ page }) => {
+    test('CT-04 Login Após Erro', async ({ page }) => {
         const loginPage = new LoginPage(page);
 
         await loginPage.navigate();
@@ -67,7 +67,7 @@ test.describe('SUCESSO', () => {
 //SECTION - CENÁRIOS DE ERRO
 test.describe('ERRO', () => {
 
-    test('CPF inexistente', async ({ page }) => {
+    test('CT-05 CPF inexistente', async ({ page }) => {
         const loginPage = new LoginPage(page);
 
         await loginPage.navigate();
@@ -79,7 +79,7 @@ test.describe('ERRO', () => {
 
 
 
-    test('CPF Inválido', async ({ page }) => {
+    test('CT-06 CPF Inválido', async ({ page }) => {
         const loginPage = new LoginPage(page);
 
         await loginPage.navigate();
@@ -91,7 +91,7 @@ test.describe('ERRO', () => {
 
 
 
-    test('CPF Vazio', async ({ page }) => {
+    test('CT-07 CPF Vazio', async ({ page }) => {
         const loginPage = new LoginPage(page);
 
         await loginPage.navigate();
@@ -104,7 +104,7 @@ test.describe('ERRO', () => {
 
 
 
-    test('Senha Vazia', async ({ page }) => {
+    test('CT-08 Senha Vazia', async ({ page }) => {
         const loginPage = new LoginPage(page);
 
         await loginPage.navigate();
@@ -117,7 +117,7 @@ test.describe('ERRO', () => {
 
 
 
-        test('Ambos Vazios', async ({ page }) => {
+        test('CT-09 Ambos Vazios', async ({ page }) => {
         const loginPage = new LoginPage(page);
 
         await loginPage.navigate();
@@ -135,7 +135,7 @@ test.describe('ERRO', () => {
 //SECTION - CENÁRIOS DE SEGURANÇA
 test.describe('SEGURANÇA', () => {
 
-    test('SQL Injection', async ({ page }) => {
+    test('CT-10 SQL Injection', async ({ page }) => {
         const loginPage = new LoginPage(page);
         await loginPage.navigate();
         
@@ -157,13 +157,13 @@ test.describe('SEGURANÇA', () => {
             try {
                 await Promise.race([
                     loginPage.login(payload, "teste123"),
-                    page.waitForTimeout(5000) // Timeout de 5segunsdos por payload
+                    page.waitForTimeout(10000) // Timeout de 5segunsdos por payload
                 ]);
                 
                 // Verifica as tentativas de login com timeout curto
                 const loggedIn = await Promise.race([
                     page.locator('sub:has-text("Olá,")').isVisible(),
-                    page.waitForTimeout(2000).then(() => false)
+                    page.waitForTimeout(10000).then(() => false)
                 ]);
                 
                 if (loggedIn) {
@@ -178,13 +178,13 @@ test.describe('SEGURANÇA', () => {
             } catch (error) {
                 console.log(`⚠️  Erro com payload ${payload}: ${error.message}`);
             }
-            await page.waitForTimeout(300);
+            await page.waitForTimeout(5000);
         }
     });
 
 
 
-    test('XSS', async ({ page }) => {
+    test('CT-11 XSS', async ({ page }) => {
         const loginPage = new LoginPage(page);
         await loginPage.navigate();
 
@@ -219,11 +219,11 @@ test.describe('SEGURANÇA', () => {
 
 //SECTION - TESTES DE USABILIDADE
 test.describe('USABILIDADE', () => {
-    test('Recuperação de Senha', async ({ page }) => {
+    test('CT-12 Recuperação de Senha', async ({ page }) => {
         const loginPage = new LoginPage(page);
         await loginPage.navigate();
 
-        loginPage.forgotPassword('35186881899');
+        loginPage.forgotPassword('45951270812');
         
         const mensagem = page.getByText('Enviamos para o seu e-mail a nova senha');
         await expect(mensagem).toBeVisible({ timeout: 10000 });
